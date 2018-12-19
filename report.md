@@ -8,7 +8,7 @@ Deep Deterministic Policy Gradient (DDPG) was first proposed by TP Lillicrap et 
 
 ### Algorithm
 
-![GitHub Logo](https://github.com/cloud36/continuous-control/blob/master/continuous-control/ddpg.png)
+![DDPG](https://github.com/cloud36/continuous-control-rl/blob/master/ddpg.png)
 
 **Actor**: As we can see the actor is a policy based network, that picks actions given a state and weights from a DNN. 
 

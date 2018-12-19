@@ -10,6 +10,8 @@ Deep Deterministic Policy Gradient (DDPG) was first proposed by TP Lillicrap et 
 
 ![DDPG](https://github.com/cloud36/continuous-control-rl/blob/master/ddpg.png)
 
+[source](https://arxiv.org/abs/1509.02971)
+
 **Actor**: As we can see the actor is a policy based network, that picks actions given a state and weights from a DNN. 
 
 **Critic**: The critic is a standard DQN, that assigns values to a state/action pair according to the weights of a DNN.  

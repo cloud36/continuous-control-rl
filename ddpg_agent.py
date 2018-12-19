@@ -12,7 +12,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class Agent():
     """Interacts with and learns from the environment."""
 
-    def __init__(self, state_size, action_size, random_seed, hyper):
+    def __init__(self, state_size, action_size, random_seed, hyper, actor=False, critic=False):
         """Initialize an Agent object.
         Params
         ======
@@ -24,22 +24,46 @@ class Agent():
         self.action_size = action_size
         self.seed = random.seed(random_seed)
         self.epsilon = hyper['EPSILON']
+        self.use_batch_norm = hyper['USE_BATCH_NORM']
+        self.lra = hyper['LR_ACTOR']
+        self.lrc = hyper['LR_CRITIC']
+        self.wd  = hyper['WEIGHT_DECAY']
+        self.noise_sig = hyper['NOISE_SIGMA']
+        self.buffer_size = hyper['BUFFER_SIZE']
+        self.batch_size = hyper['BATCH_SIZE']
+        self.update = hyper['UPDATE_EVERY']
+        self.num_updates = hyper['NUM_UPDATES']
+        self.gamma = hyper['GAMMA']
+        self.tau = hyper['TAU']
+        
+        if not actor:
+            # Actor Network (w/ Target Network)
+            self.actor_local = Actor(state_size, action_size, self.use_batch_norm ,random_seed).to(device)
+            self.actor_target = Actor(state_size, action_size, self.use_batch_norm ,random_seed).to(device)
+            self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=self.lra)
+        
+        if actor:
+            self.actor_local = actor
+            self.actor_target = actor
+            self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=self.lra)
 
-        # Actor Network (w/ Target Network)
-        self.actor_local = Actor(state_size, action_size, hyper['USE_BATCH_NORM'] ,random_seed).to(device)
-        self.actor_target = Actor(state_size, action_size, hyper['USE_BATCH_NORM'] ,random_seed).to(device)
-        self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=hyper['LR_ACTOR'])
 
-        # Critic Network (w/ Target Network)
-        self.critic_local = Critic(state_size, action_size, hyper['USE_BATCH_NORM']  ,random_seed).to(device)
-        self.critic_target = Critic(state_size, action_size, hyper['USE_BATCH_NORM'] ,random_seed).to(device)
-        self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=hyper['LR_CRITIC'], weight_decay=hyper['WEIGHT_DECAY'])
-
+        if not critic:
+            # Critic Network (w/ Target Network)
+            self.critic_local = Critic(state_size, action_size, self.use_batch_norm ,random_seed).to(device)
+            self.critic_target = Critic(state_size, action_size, self.use_batch_norm ,random_seed).to(device)
+            self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=self.lrc, weight_decay=self.wd )
+            
+        if critic:
+            self.critic_local = critic
+            self.critic_target = critic
+            self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=self.lrc, weight_decay=self.wd )
+            
         # Noise process
-        self.noise = OUNoise(action_size, random_seed, hyper['NOISE_SIGMA'])
+        self.noise = OUNoise(action_size, random_seed, self.noise_sig)
 
         # Replay memory
-        self.memory = ReplayBuffer(action_size, hyper['BUFFER_SIZE'], hyper['BATCH_SIZE'], random_seed)
+        self.memory = ReplayBuffer(action_size, self.buffer_size, self.batch_size, random_seed)
 
     def step(self, states, actions, rewards, next_states, dones, timestep):
         """Save experience in replay memory, and use random sample from buffer to learn."""
@@ -48,10 +72,10 @@ class Agent():
             self.memory.add(state, action, reward, next_state, done)
 
         # Learn, if enough samples are available in memory
-        if len(self.memory) > hyper['BATCH_SIZE'] and timestep % hyper['UPDATE_EVERY'] == 0:
-            for _ in range(hyper['NUM_UPDATES']):
+        if len(self.memory) > self.batch_size and timestep % self.update == 0:
+            for _ in range(self.num_updates):
                 experiences = self.memory.sample()
-                self.learn(experiences, hyper['GAMMA'])
+                self.learn(experiences, self.gamma)
 
     def act(self, state, add_noise=True):
         """Returns actions for given state as per current policy."""
@@ -109,8 +133,8 @@ class Agent():
         self.actor_optimizer.step()
 
         # ----------------------- update target networks ----------------------- #
-        self.soft_update(self.critic_local, self.critic_target, hyper['TAU'])
-        self.soft_update(self.actor_local, self.actor_target, hyper['TAU'])
+        self.soft_update(self.critic_local, self.critic_target, self.tau)
+        self.soft_update(self.actor_local, self.actor_target, self.tau)
 
         # ---------------------------- update noise ---------------------------- #
         self.noise.reset()

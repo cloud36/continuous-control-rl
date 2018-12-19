@@ -56,7 +56,7 @@ As we can see, there are many hyperparameters to manage here. Not just in the DD
 
 ### Results
 
-Below we can see the score per episode and average score. 
+Below we can see the score per episode and average score over trailing 100 episodes. 
 
 ![DDPG](https://github.com/cloud36/continuous-control-rl/blob/master/score_ddpg.png)
 
@@ -64,5 +64,5 @@ Below we can see the score per episode and average score.
 
 ### Improvements
 * Google Cloud Hyperparameter Search
-* PPO
-* A3C
+   * Considering that DDPG and Deep RL is very sensitive hyperparameters, it would be interesting to speed up and/or distribute this process. Google Cloud Platform recently [detailed how to do this on their Cloud ML Engine.](https://cloud.google.com/blog/products/ai-machine-learning/deep-reinforcement-learning-on-gcp-using-hyperparameters-and-cloud-ml-engine-to-best-openai-gym-games)
+* Although, DDPG is a great algorithm for continuous action spaces, I am interested to experiment with other actor-critic methods such as PPO and A3C.

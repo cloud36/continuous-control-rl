@@ -56,6 +56,12 @@ As we can see, there are many hyperparameters to manage here. Not just in the DD
 
 ### Results
 
+Below we can see the score per episode and average score. 
+
+![DDPG](https://github.com/cloud36/continuous-control-rl/blob/master/score_ddpg.png)
+
+![DDPG](https://github.com/cloud36/continuous-control-rl/blob/master/average_score_ddpg.png)
+
 ### Improvements
 * Google Cloud Hyperparameter Search
 * PPO

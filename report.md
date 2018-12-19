@@ -56,6 +56,19 @@ Below, we can see the hyperparameters used for the solution used to solve Reache
 
 ### Network Architecture 
 
+The solving Actor and Critic Networks had the following architecture. 
+
+**Actor**
+   * Hidden Layers: 2
+   * Layer 1: 600 Units, Linear, Relu Activation
+   * Layer 2: 200 Units, Linear, Reul Activation
+   * Output: 4 Units, Tanh Activation 
+   
+**Critic**
+   * Hidden Layers: 2
+   * Layer 1: 600 Units, Linear, Relu Activation
+   * Layer 2: 200 Units, Linear, Relu Activation
+   * Output Layer: 1 Unit, Linear Activation 
 
 
 ### Results

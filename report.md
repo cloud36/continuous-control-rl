@@ -39,6 +39,8 @@ As we can see, there are many hyperparameters to manage here. Not just in the DD
 
 ### HyperParameters 
 
+Below, we can see the hyperparameters used for the solution used to solve Reacher. It is important to note that this environement / game problem was extremely sensitive to NOISE_SIGMA, EPSILON and EPSILON_DECAY. Both EPSILON and EPSILON_DECAY control the amount of noise i.e. exploration. 
+
     BUFFER_SIZE = int(1e6)     # replay buffer size
     BATCH_SIZE = 256           # minibatch size
     GAMMA = 0.99               # discount factor
@@ -53,6 +55,8 @@ As we can see, there are many hyperparameters to manage here. Not just in the DD
     NOISE_SIGMA = 0.01         # sigma for Ornstein-Uhlenbeck noise
 
 ### Network Architecture 
+
+
 
 ### Results
 
